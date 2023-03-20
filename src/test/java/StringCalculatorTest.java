@@ -18,4 +18,11 @@ class StringCalculatorTest {
         assertEquals(3, StringCalculator.add("1,2"));
     }
 
+    @Test
+    void different_count_of_numbers_ok () {
+        assertEquals(1, StringCalculator.add("1"));
+        assertEquals(7, StringCalculator.add("1,2,3,1"));
+        assertEquals(55, StringCalculator.add("1,2,3,4,5,6,7,8,9,10"));
+    }
+
 }
