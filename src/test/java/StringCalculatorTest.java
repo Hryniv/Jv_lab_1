@@ -31,4 +31,11 @@ class StringCalculatorTest {
         assertEquals(10, StringCalculator.add("1,5\n4"));
     }
 
+    @Test
+    void custom_delimiter_ok() {
+        assertEquals(3, StringCalculator.add("//%\n1%2"));
+        assertEquals(27, StringCalculator.add("//;\n1;2;4;20"));
+        assertEquals(19, StringCalculator.add("//*\n1*2*3*3*10"));
+    }
+
 }
