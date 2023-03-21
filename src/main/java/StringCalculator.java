@@ -1,7 +1,12 @@
+import Exception.NegativesNotAllowedException;
+
 public class StringCalculator {
 
-    public static int add(String numbers) {
+    public static int add(String numbers) throws NegativesNotAllowedException {
+        int sum = 0;
         StringBuilder delimiters = new StringBuilder(",|\n");
+        StringBuilder negativeNumbers = new StringBuilder();
+
         if (numbers.equals("")) {
             return 0;
         }
@@ -10,13 +15,19 @@ public class StringCalculator {
             delimiters.append("|").append("\\").append(delimitersAndNumbers[0].substring(2));
             numbers = delimitersAndNumbers[1];
         }
-        return sum(numbers.split(delimiters.toString()));
-    }
 
-    private static int sum(String[] numbers) {
-        int sum = 0;
-        for (String num: numbers) {
-            sum += Integer.parseInt(num);
+        String[] arrayOfNumbers = numbers.split(delimiters.toString());
+        for (String number: arrayOfNumbers) {
+            int n = Integer.parseInt(number);
+            if (n < 0) {
+                negativeNumbers.append(", ").append(n);
+            } else {
+                sum += n;
+            }
+        }
+        if (negativeNumbers.length() > 0) {
+            throw new NegativesNotAllowedException("Not allowed to add negative numbers:"
+                    + negativeNumbers.substring(1));
         }
         return sum;
     }
