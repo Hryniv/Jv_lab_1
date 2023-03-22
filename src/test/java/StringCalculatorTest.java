@@ -1,5 +1,4 @@
 import org.junit.jupiter.api.Test;
-import Exception.NegativesNotAllowedException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,9 +26,52 @@ class StringCalculatorTest {
     }
 
     @Test
-    void comma_or_newLine_separators_Ok() {
+    void comma_and_newLineSeparator_Ok() {
         assertEquals(6, StringCalculator.add("1\n2,3"));
         assertEquals(10, StringCalculator.add("1,5\n4"));
+    }
+
+    @Test
+    void newLineDelimiter_Ok() {
+        assertEquals(9, StringCalculator.add("1\n6\n2"));
+    }
+
+    @Test
+    void invalidInputDelimiters_NotOk() {
+        try {
+            StringCalculator.add("1,\n5");
+            fail("Expected InvalidDelimiterInputException");
+        } catch (InvalidDelimitersInputException ignored) {
+        }
+    }
+
+    @Test
+    void numbersStartWithInvalidInputDelimiters_NotOk () {
+        try {
+            StringCalculator.add(",1,5");
+            fail("Expected InvalidDelimiterInputException");
+        } catch (InvalidDelimitersInputException ex) {
+            String message = ex.getMessage();
+            if(!message.equals("Input start with delimiter: ,")) {
+                fail("\nExpected: " + '"' + "Input start with delimiter: ," + '"'
+                        + "\nActual: " + '"' + message + '"');
+            }
+        }
+
+    }
+
+    @Test
+    void numbersEndWithInvalidInputDelimiters_NotOk () {
+        try {
+            StringCalculator.add("1,5\n");
+            fail("Expected InvalidDelimiterInputException");
+        } catch (InvalidDelimitersInputException ex) {
+            String message = ex.getMessage();
+            if(!message.equals("Input end with delimiter: \n")) {
+                fail("\nExpected: " + '"' + "Input end with delimiter: ," + '"'
+                        + "\nActual: " + '"' + message + '"');
+            }
+        }
     }
 
     @Test
@@ -60,5 +102,6 @@ class StringCalculatorTest {
             }
         }
     }
+
 
 }
