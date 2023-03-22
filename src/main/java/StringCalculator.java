@@ -1,37 +1,42 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class StringCalculator {
 
     public static int add(String numbers) throws NegativesNotAllowedException {
         int sum = 0;
         ArrayList<String> delimiters = new ArrayList<>(List.of(",", "\n"));
-        StringBuilder delimiters_pattern = new StringBuilder(",|\n");
+        String delimiters_pattern = ",|\n";
         StringBuilder negativeNumbers = new StringBuilder();
 
         if (numbers.equals("")) {
             return 0;
         }
+
         if (numbers.startsWith("//")) {
             String[] elements = numbers.substring(2).split("\n", 2);
 
-            if (elements[0].startsWith("[")) {
-                elements[0] = elements[0].substring(1, elements[0].length() - 1);
-            } else {
-                if (elements[0].length() > 1) {
-                    throw new InvalidDelimitersInputException("Incorrect registration of long delimiter (length > 1)\n" +
-                            "Wrap the separator with square brackets: [" + elements[0] +"]");
-                }
+            if (!elements[0].startsWith("[") && elements[0].length() > 1) {
+                throw new InvalidDelimitersInputException("Incorrect registration of long delimiter (length > 1)\n" +
+                        "Wrap the separator with square brackets: [" + elements[0] + "]");
             }
-            delimiters.add(elements[0]);
-            delimiters_pattern.append("|").append(metaCharacterToSimpleCharacter(elements[0]));
+
+            if(elements[1].length() == 0) {
+                return 0;
+            }
+
+            expandDelimiters(delimiters, elements[0]);
+
+            delimiters_pattern = toDelimitersStringPattern(delimiters);
 
             numbers = elements[1];
         }
 
         checkInvalidDelimitersInput(numbers, delimiters);
 
-        String[] arrayOfNumbers = numbers.split(delimiters_pattern.toString());
+        String[] arrayOfNumbers = numbers.split(delimiters_pattern);
         for (String number: arrayOfNumbers) {
             int n = Integer.parseInt(number);
             if (n < 0) {
@@ -48,6 +53,19 @@ public class StringCalculator {
         }
 
         return sum;
+    }
+
+    private static void expandDelimiters(ArrayList<String> delimitersList, String delimiters)
+    {
+        Arrays.stream(delimiters.split("]"))
+                        .map(i -> i.contains("[") ? i.substring(1) : i)
+                        .forEach(delimitersList::add);
+    }
+
+    private static String toDelimitersStringPattern(ArrayList<String> delimitersList) {
+        return delimitersList.stream()
+                .map(StringCalculator::metaCharacterToSimpleCharacter)
+                .collect(Collectors.joining("|"));
     }
 
     private static void checkInvalidDelimitersInput(String numbers, ArrayList<String> delimiters) {
@@ -80,8 +98,8 @@ public class StringCalculator {
                             + (i - cur.length()) + " end at index = " + (i - 1) + "): " + cur);
                 }
             }
-            i++;
 
+            i++;
         }
     }
 

@@ -179,15 +179,20 @@ class StringCalculatorTest {
     }
 
     @Test
-    void longDelimiterCorrectRegistration_Ok() {
+    void twoCharacterDelimiterCorrectRegistration_Ok() {
         assertEquals(45, StringCalculator.add("//[**]\n1**2**22**20"));
         assertEquals(45, StringCalculator.add("//[//]\n1//2//22//20"));
     }
 
     @Test
-    void differentLengthDelimiters_Ok () {
+    void oneCharacterDelimiterCorrectRegistration_Ok () {
         assertEquals(45, StringCalculator.add("//[*]\n1*2*22*20"));
-        assertEquals(45, StringCalculator.add("//[//]\n1//2//22//20"));
-        assertEquals(88, StringCalculator.add("//[%%%%]\n1%%%%2%%%%22%%%%20%%%%43"));
+    }
+
+    @Test
+    void multipleDelimiters_Ok () {
+        assertEquals(13, StringCalculator.add("//[*][%]\n1*2%10"));
+        assertEquals(17, StringCalculator.add("//[+][$]\n1+2$4$10"));
+
     }
 }
