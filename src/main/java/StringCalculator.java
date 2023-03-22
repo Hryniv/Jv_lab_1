@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,8 +59,9 @@ public class StringCalculator {
     private static void expandDelimiters(ArrayList<String> delimitersList, String delimiters)
     {
         Arrays.stream(delimiters.split("]"))
-                        .map(i -> i.contains("[") ? i.substring(1) : i)
-                        .forEach(delimitersList::add);
+                .map(i -> i.contains("[") ? i.substring(1) : i)
+                .sorted(Comparator.reverseOrder())
+                .forEach(delimitersList::add);
     }
 
     private static String toDelimitersStringPattern(ArrayList<String> delimitersList) {

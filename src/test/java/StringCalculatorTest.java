@@ -195,4 +195,11 @@ class StringCalculatorTest {
         assertEquals(17, StringCalculator.add("//[+][$]\n1+2$4$10"));
 
     }
+
+    @Test
+    void multipleDelimitersDifferentLength_Ok () {
+        assertEquals(14, StringCalculator.add("//[***][**]\n1***2**3***8"));
+        assertEquals(17, StringCalculator.add("//[#][##][###][%%]\n5%%2#5###3##1#1"));
+        assertEquals(20, StringCalculator.add("//[***][%][*][%%][%%%][**]\n1*2%%%3***4%%5**2%3"));
+    }
 }
