@@ -46,7 +46,7 @@ class StringCalculatorTest {
     }
 
     @Test
-    void numbersStartWithInvalidInputDelimiters_NotOk () {
+    void numbersStartWithInvalidInputDelimiter_NotOk () {
         try {
             StringCalculator.add(",1,5");
             fail("Expected InvalidDelimiterInputException");
@@ -61,7 +61,7 @@ class StringCalculatorTest {
     }
 
     @Test
-    void numbersEndWithInvalidInputDelimiters_NotOk () {
+    void numbersEndWithInvalidInputDelimiter_NotOk () {
         try {
             StringCalculator.add("1,5\n");
             fail("Expected InvalidDelimiterInputException");
@@ -69,6 +69,49 @@ class StringCalculatorTest {
             String message = ex.getMessage();
             if(!message.equals("Input end with delimiter: \n")) {
                 fail("\nExpected: " + '"' + "Input end with delimiter: ," + '"'
+                        + "\nActual: " + '"' + message + '"');
+            }
+        }
+    }
+
+    @Test
+    void numbersStartWithUnknownDelimiter_NotOk () {
+        try {
+            StringCalculator.add("*1,5");
+            fail("Expected InvalidDelimiterInputException");
+        } catch (InvalidDelimitersInputException ex) {
+            String message = ex.getMessage();
+            if(!message.equals("Input start with unknown delimiter: *")) {
+                fail("\nExpected: " + '"' + "Input start with unknown delimiter: *" + '"'
+                        + "\nActual: " + '"' + message + '"');
+            }
+        }
+
+    }
+
+    @Test
+    void numbersEndWithUnknownDelimiter_NotOk () {
+        try {
+            StringCalculator.add("1,5**");
+            fail("Expected InvalidDelimiterInputException");
+        } catch (InvalidDelimitersInputException ex) {
+            String message = ex.getMessage();
+            if(!message.equals("Input end with unknown delimiter: **")) {
+                fail("\nExpected: " + '"' + "Input end with unknown delimiter: **" + '"'
+                        + "\nActual: " + '"' + message + '"');
+            }
+        }
+    }
+
+    @Test
+    void negativeNumberWithInvalidInputDelimiter_NotOk() {
+        try {
+            StringCalculator.add("1,5,\n-7");
+            fail("Expected InvalidDelimiterInputException");
+        } catch (InvalidDelimitersInputException ex) {
+            String message = ex.getMessage();
+            if(!message.equals("Input contain unknown delimiter (start at index = 3 end at index = 4): ,\n")) {
+                fail("\nExpected: " + '"' + "Input contain unknown delimiter (start at index = 3 end at index = 4): ,\n" + '"'
                         + "\nActual: " + '"' + message + '"');
             }
         }
@@ -103,5 +146,10 @@ class StringCalculatorTest {
         }
     }
 
+    @Test
+    void numbersBiggerThen1000_Ok () {
+        assertEquals(1007, StringCalculator.add("1000,7,10001"));
+        assertEquals(1999, StringCalculator.add("1000,999,1001"));
+    }
 
 }

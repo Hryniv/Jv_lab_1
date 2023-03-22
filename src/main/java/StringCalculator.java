@@ -30,6 +30,8 @@ public class StringCalculator {
             int n = Integer.parseInt(number);
             if (n < 0) {
                 negativeNumbers.append(", ").append(n);
+            } else if (n > 1000)  {
+                continue;
             } else {
                 sum += n;
             }
