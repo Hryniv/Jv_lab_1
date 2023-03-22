@@ -137,10 +137,11 @@ class StringCalculatorTest {
     void negativeNumberExceptionMessage_Ok() {
         try {
             StringCalculator.add("-1,5,-4,5,-7");
+            fail("Expected NegativesNotAllowedException");
         } catch (RuntimeException ex) {
             String message = ex.getMessage();
             if (!message.equals("Not allowed to add negative numbers: -1, -4, -7")) {
-                fail("\nExpected: " + '"' + "Not allowed to add negative numbers: -1, -4, -7" + '"'
+                fail("\nExpected: " + "\"Not allowed to add negative numbers: -1, -4, -7\""
                 + "\nActual: " + '"' + message + '"');
             }
         }
@@ -152,4 +153,41 @@ class StringCalculatorTest {
         assertEquals(1999, StringCalculator.add("1000,999,1001"));
     }
 
+    @Test
+    void longDelimiterIncorrectRegistration_NotOk () {
+        try {
+            StringCalculator.add("//***\n1***2***3");
+            fail("InvalidDelimiterInputException");
+        } catch (InvalidDelimitersInputException ignored) {
+        }
+    }
+
+    @Test
+    void longDelimiterIncorrectRegistrationMessage_Ok () {
+        try {
+            StringCalculator.add("//***\n1***2***3");
+            fail("InvalidDelimiterInputException");
+        } catch (InvalidDelimitersInputException ex) {
+            String message = ex.getMessage();
+            if (!message.equals("Incorrect registration of long delimiter (length > 1)\n" +
+                    "Wrap the separator with square brackets: [***]")) {
+                fail("Expected: \"Incorrect registration of long delimiter (length > 1)\n" +
+                                "Wrap the separator with square brackets: [***]"
+                        + "Actual: " + '"' + message + '"');
+            }
+        }
+    }
+
+    @Test
+    void longDelimiterCorrectRegistration_Ok() {
+        assertEquals(45, StringCalculator.add("//[**]\n1**2**22**20"));
+        assertEquals(45, StringCalculator.add("//[//]\n1//2//22//20"));
+    }
+
+    @Test
+    void differentLengthDelimiters_Ok () {
+        assertEquals(45, StringCalculator.add("//[*]\n1*2*22*20"));
+        assertEquals(45, StringCalculator.add("//[//]\n1//2//22//20"));
+        assertEquals(88, StringCalculator.add("//[%%%%]\n1%%%%2%%%%22%%%%20%%%%43"));
+    }
 }

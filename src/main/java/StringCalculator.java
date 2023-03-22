@@ -1,8 +1,5 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 public class StringCalculator {
 
@@ -17,8 +14,17 @@ public class StringCalculator {
         }
         if (numbers.startsWith("//")) {
             String[] elements = numbers.substring(2).split("\n", 2);
+
+            if (elements[0].startsWith("[")) {
+                elements[0] = elements[0].substring(1, elements[0].length() - 1);
+            } else {
+                if (elements[0].length() > 1) {
+                    throw new InvalidDelimitersInputException("Incorrect registration of long delimiter (length > 1)\n" +
+                            "Wrap the separator with square brackets: [" + elements[0] +"]");
+                }
+            }
             delimiters.add(elements[0]);
-            delimiters_pattern.append("|").append(metaCharacterToSimple(elements[0]));
+            delimiters_pattern.append("|").append(metaCharacterToSimpleCharacter(elements[0]));
 
             numbers = elements[1];
         }
@@ -31,7 +37,7 @@ public class StringCalculator {
             if (n < 0) {
                 negativeNumbers.append(", ").append(n);
             } else if (n > 1000)  {
-                continue;
+                sum += 0;
             } else {
                 sum += n;
             }
@@ -79,7 +85,7 @@ public class StringCalculator {
         }
     }
 
-    private static String metaCharacterToSimple(String characters) {
+    private static String metaCharacterToSimpleCharacter(String characters) {
         StringBuilder builder = new StringBuilder();
         for (char c: characters.toCharArray()) {
             builder.append("\\").append(c);
