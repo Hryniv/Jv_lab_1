@@ -27,7 +27,6 @@ public class StringCalculator {
             if(elements[1].length() == 0) {
                 return 0;
             }
-
             expandDelimiters(delimiters, elements[0]);
 
             delimiters_pattern = toDelimitersStringPattern(delimiters);
@@ -60,8 +59,17 @@ public class StringCalculator {
     {
         Arrays.stream(delimiters.split("]"))
                 .map(i -> i.contains("[") ? i.substring(1) : i)
-                .sorted(Comparator.reverseOrder())
-                .forEach(delimitersList::add);
+                .filter(i -> !i.isEmpty())
+                .sorted()
+                .forEach(i -> delimitersList.add(0, i));
+    }
+
+    private static String metaCharacterToSimpleCharacter(String characters) {
+        StringBuilder builder = new StringBuilder();
+        for (char c: characters.toCharArray()) {
+            builder.append("\\").append(c);
+        }
+        return builder.toString();
     }
 
     private static String toDelimitersStringPattern(ArrayList<String> delimitersList) {
@@ -103,13 +111,5 @@ public class StringCalculator {
 
             i++;
         }
-    }
-
-    private static String metaCharacterToSimpleCharacter(String characters) {
-        StringBuilder builder = new StringBuilder();
-        for (char c: characters.toCharArray()) {
-            builder.append("\\").append(c);
-        }
-        return builder.toString();
     }
 }

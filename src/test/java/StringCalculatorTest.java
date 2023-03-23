@@ -193,7 +193,6 @@ class StringCalculatorTest {
     void multipleDelimiters_Ok () {
         assertEquals(13, StringCalculator.add("//[*][%]\n1*2%10"));
         assertEquals(17, StringCalculator.add("//[+][$]\n1+2$4$10"));
-
     }
 
     @Test
